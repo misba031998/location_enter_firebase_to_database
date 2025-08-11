@@ -1,10 +1,14 @@
-const functions = require("firebase-functions");
+// functions/index.js
+const express = require("express");
 const admin = require("firebase-admin");
 const axios = require("axios");
 
 admin.initializeApp();
 
-exports.sendLocationDataToSQL = functions.https.onRequest(async (req, res) => {
+const app = express();
+app.use(express.json());
+
+app.post("/sendLocationDataToSQL", async (req, res) => {
   const db = admin.firestore();
   try {
     const snapshot = await db.collection("2025").get();
@@ -36,4 +40,9 @@ exports.sendLocationDataToSQL = functions.https.onRequest(async (req, res) => {
     console.error(error);
     res.status(500).send("Error");
   }
+});
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
