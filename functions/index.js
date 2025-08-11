@@ -36,8 +36,14 @@ app.post("/sendLocationDataToSQL", async (req, res) => {
     });
 
     await axios.post("https://location-rav4.onrender.com/Api/receive-location", {
-      locations: locationData
+                      locations: locationData
+    }).then(response => {
+        console.log("Response from SQL API:", response.data);
+    }).catch(error => {
+        console.error("Error sending to SQL API:", error.response?.data || error.message);
+      throw error;
     });
+
 
     await batch.commit();
     res.status(200).send("Success");
